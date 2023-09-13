@@ -10,11 +10,16 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
 ```
 
 # Introdução
 
-Este documento é um exemplo de um documento de R Markdown. O R Markdown pode ser usado para criar documentos dinâmicos, que podem ser exportados como HTML (default) mas ainda como word ou pdf. Isto pode ser util quando estamos a realizar uma análise sobre um conjunto de dados que (eventualmente) possa sofrer alterações ao longo do tempo (e.g. um novo aluno inscreve-se, um novo animal é capturado, um novo local é visitado, etc).
+Este documento é um exemplo de um documento de R Markdown. O R Markdown pode ser usado para criar documentos dinâmicos, que podem ser exportados como HTML (default) mas ainda como word ou pdf. Most probably you are reading this as an html from the git reposityry hosted at:
+
+https://github.com/TiagoAMarques/wordcloudEN2023
+
+Isto pode ser util quando estamos a realizar uma análise sobre um conjunto de dados que (eventualmente) possa sofrer alterações ao longo do tempo (e.g. um novo aluno inscreve-se, um novo animal é capturado, um novo local é visitado, etc).
 
 Neste caso, vamos criar uma wordcloud com os nomes dos alunos de EN em 2023/2024
 
@@ -78,7 +83,11 @@ Vamos finalmente criar uma bonita cloud tag dos nomes dos alunos de Ecologia Num
 
 ```{r}
 #create tag cloud
-set.seed(1234)
+#replace with your student number
+#for your unique experience!
+# as this is MY student number
+student.number<-19549
+set.seed(student.number)
 wordcloud(words = d$word, freq = d$freq, min.freq = 2,
           max.words=200, random.order=FALSE, rot.per=0.35, 
           colors=brewer.pal(8, "Dark2"))
@@ -86,7 +95,7 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 2,
 
 And now, up to you to test other stuff around text analysis!
 
-A nice thing to do. Add manually pretend new students, with the names Tiago, Susana, Sofia, Hugo, say repeated 30 times each. 
+A nice thing to do. Add manually pretend new 120 students, with the names Tiago, Susana, Sofia, Hugo, say repeated 30 times each name. 
 
 In other words, just run the lines of code in the next chunk, which are currently not evaluated since I set the option `eval=FALSE`. This creates a new file that is added to the folder "text4tmA", and that will mean that next time you compile this document, there are more names in the folder where the routine looks for the names, so these are added, and the word cloud updated accordingly.
 
@@ -98,4 +107,6 @@ col.names=FALSE,quote=FALSE,row.names = FALSE)
 
 Re-compile the document, and check how the teachers names have now contaminated it all ;)
 
-But think how handy this can be in the case where you have an analysis that you did, but then collected new data. Instead of redoing all the work, you just have to recompile a dynamic report. If you have done that, send me the screenshot :)
+But think how handy this can be in the case where you have an analysis that you did, but then collected new data. Instead of redoing all the work, you just have to recompile a dynamic report. If you have done that, send me the screenshot :) - it could be worth bonus points for your assessment if you replace my `student number` `r student.number` by your student number, in the code above.
+
+Do you know what the function `set.seed()` is doing in the above code? Can you find out? Google is your friend ;)
