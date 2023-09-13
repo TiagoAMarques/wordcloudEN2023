@@ -1,0 +1,89 @@
+---
+title: "Ecologia Numérica - Alunos 2023"
+author: "Tiago A. Marques"
+date: "September 13, 2023"
+output: 
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introdução
+
+Este documento é um exemplo de um documento de R Markdown. O R Markdown pode ser usado para criar documentos dinâmicos, que podem ser exportados como HTML (default) mas ainda como word ou pdf. Isto pode ser util quando estamos a realizar uma análise sobre um conjunto de dados que (eventualmente) possa sofrer alterações ao longo do tempo (e.g. um novo aluno inscreve-se, um novo animal é capturado, um novo local é visitado, etc).
+
+Neste caso, vamos criar uma wordcloud com os nomes dos alunos de EN em 2023/2024
+
+Para analisar este conjunto de dados vamos necessitar de utilizar o seguinte conjunto de packages extra:
+
+```{r,warning=FALSE,message=FALSE}
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
+```
+
+Tipicamente os comandos acima poderiam estar escondidos, usando o argumento `echo=FALSE` no respectivo code chunk. Por default `echo=TRUE`, ou seja, todo o código fica visível no output (e.g. html, word, pdf) gerado.
+
+# Os dados
+
+Os dados analisados aqui foram obtidos exportando um .xls do sistema Fenix a 13 09 2023. O nome do ficheiro é "students_66517_Ecologia_Numerica.2023-09-13_13-12-34_375_fromFENIX.xlsx". Por razões de RGPD este ficheiro não deve ser partilhado com os alunos.
+
+Aqui são partilhados com os alunos os nomes, num ficheiro que contem em cada linha um nome (uma palavra), aleatoriamente seleccionado de todos os nomes dos alunos para anonimizar os nomes completos. Essa informação está no documento "nomesAnonimos.txt", criado no documento alunos2023.Rmd, a que os alunos não tem acesso.
+
+# Text analysis com base nos nomes
+
+Existe um grande campo da estatística de text analysis, mas aqui vamos apenas construir uma wordcloud.
+
+
+Agora, lemos os nomes:
+
+```{r}
+nomes=VCorpus(DirSource(directory="text4tm",encoding = "UTF-8"),
+readerControl=list(language = "lat"))
+```
+
+Removemos stop words, como "dos"", "da" e "de"
+
+```{r}
+#nomes <- Corpus(VectorSource(EN2022$nome))
+#inspect(nomes)
+#retiras o "dos"" e o "do" e o "de"
+nomes <- tm_map(nomes, removeWords, c("dos","de","da","do"))
+```
+
+organizamos os dados
+
+```{r}
+dtm <- TermDocumentMatrix(nomes)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+```
+
+Vemos quais os nomes mais frequentes
+
+```{r}
+head(d, 25)
+barplot(d[1:15,]$freq, las = 2, names.arg = d[1:15,]$word,
+        col ="lightblue", main ="Most frequent words",
+        ylab = "Word frequencies")
+```
+
+Temos Santos Silva em grande (não fazer piadas politicas, não é sobe o Augusto...). 
+
+Vamos finalmente criar uma bonita cloud tag dos nomes dos alunos de Ecologia Numérica em 2023/2024, que costumo usar nas aulas para depois de "quem sou eu" lhes mostrar "quem são eles". Ou será que eles são só nomes? Cabe-lhes a eles mostrar que não!
+
+```{r}
+#create tag cloud
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 2,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+And now, up to you to test other stuff around text analysis!
