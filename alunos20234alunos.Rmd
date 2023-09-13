@@ -40,18 +40,16 @@ Aqui são partilhados com os alunos os nomes, num ficheiro que contem em cada li
 Existe um grande campo da estatística de text analysis, mas aqui vamos apenas construir uma wordcloud.
 
 
-Agora, lemos os nomes:
+Agora, lemos os nomes. Nota, para isto funcionar bem, devem ter, na directoria onde está este ficheiro, "alunos20234alunos.Rmd", uma pasta de nome "text4tm" onde colocam o ficheiro "nomesAnonimos.txt"
 
 ```{r}
-nomes=VCorpus(DirSource(directory="text4tm",encoding = "UTF-8"),
+nomes=VCorpus(DirSource(directory="text4tmA",encoding = "UTF-8"),
 readerControl=list(language = "lat"))
 ```
 
 Removemos stop words, como "dos"", "da" e "de"
 
 ```{r}
-#nomes <- Corpus(VectorSource(EN2022$nome))
-#inspect(nomes)
 #retiras o "dos"" e o "do" e o "de"
 nomes <- tm_map(nomes, removeWords, c("dos","de","da","do"))
 ```
@@ -87,3 +85,17 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 2,
 ```
 
 And now, up to you to test other stuff around text analysis!
+
+A nice thing to do. Add manually pretend new students, with the names Tiago, Susana, Sofia, Hugo, say repeated 30 times each. 
+
+In other words, just run the lines of code in the next chunk, which are currently not evaluated since I set the option `eval=FALSE`. This creates a new file that is added to the folder "text4tmA", and that will mean that next time you compile this document, there are more names in the folder where the routine looks for the names, so these are added, and the word cloud updated accordingly.
+
+```{r,eval=FALSE}
+fake.names<-rep(c("Tiago","Susana","Sofia","Hugo"),each=30)
+write.table(fake.names,file="text4tmA/FakeNamesArTheBestNames.txt",
+col.names=FALSE,quote=FALSE,row.names = FALSE)
+```
+
+Re-compile the document, and check how the teachers names have now contaminated it all ;)
+
+But think how handy this can be in the case where you have an analysis that you did, but then collected new data. Instead of redoing all the work, you just have to recompile a dynamic report. If you have done that, send me the screenshot :)
